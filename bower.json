@@ -1,6 +1,6 @@
 {
   "name": "deckar01-task_list",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Markdown TaskList components",
   "homepage": "https://github.com/deckar01/task_list",
   "dependencies": {
