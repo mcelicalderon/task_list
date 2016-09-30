@@ -27,7 +27,7 @@ Rendering Task List item checkboxes from source Markdown depends on the `TaskLis
 
 ``` ruby
 require 'html/pipeline'
-require 'deckar01-task_list/filter'
+require 'task_list/filter'
 
 pipeline = HTML::Pipeline.new [
   HTML::Pipeline::MarkdownFilter,
@@ -97,7 +97,7 @@ This is the preferred method for including the frontend assets in your applicati
 
 ``` ruby
 # config/application.rb
-require 'deckar01-task_list/railtie'
+require 'task_list/railtie'
 ```
 
 ### Frontend: Rails 2.3 Manual method
@@ -107,7 +107,7 @@ Wherever you have your Sprockets setup:
 ``` ruby
 Sprockets::Environment.new(Rails.root) do |env|
   # Load TaskList assets
-  require 'deckar01-task_list/railtie'
+  require 'task_list/railtie'
   TaskList.asset_paths.each do |path|
     env.append_path path
   end
