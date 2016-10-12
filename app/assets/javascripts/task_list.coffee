@@ -135,17 +135,10 @@ itemPattern = ///
   )
 ///
 
-# Used to filter out code fences from the source for comparison only.
-# http://rubular.com/r/x5EwZVrloI
-# Modified slightly due to issues with JS
-codeFencesPattern = ///
-  ^`{3}           # ```
-    (?:\s*\w+)?   # followed by optional language
-    [\S\s]        # whitespace
-  .*              # code
-  [\S\s]          # whitespace
-  ^`{3}$          # ```
-///mg
+# Used to skip checkbox markup inside of code fences.
+# http://rubular.com/r/TfCDNsy8x4
+startFencesPattern = /^`{3}.*$/
+endFencesPattern = /^`{3}$/
 
 # Used to filter out potential mismatches (items not in lists).
 # http://rubular.com/r/OInl6CiePy
@@ -164,11 +157,19 @@ itemsInParasPattern = ///
 #
 # Returns the updated String text.
 updateTaskListItem = (source, itemIndex, checked) ->
-  clean = source.replace(/\r/g, '').replace(codeFencesPattern, '').
-    replace(itemsInParasPattern, '').split("\n")
+  clean = source.replace(/\r/g, '').replace(itemsInParasPattern, '').split("\n")
   index = 0
+  inCodeBlock = false
   result = for line in source.split("\n")
-    if line in clean && line.match(itemPattern)
+    if inCodeBlock
+      # Lines inside of a code block are ignored.
+      if line.match(endFencesPattern)
+        # Stop ignoring lines once the code block is closed.
+        inCodeBlock = false
+    else if line.match(startFencesPattern)
+      # Start ignoring lines inside a code block.
+      inCodeBlock = true
+    else if line in clean && line.match(itemPattern)
       index += 1
       if index == itemIndex
         line =
