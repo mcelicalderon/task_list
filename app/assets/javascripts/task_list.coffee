@@ -135,7 +135,8 @@ itemPattern = ///
   )
 ///
 
-# Used to filter out code fences from the source for comparison only.
+# Used to skip checkbox markup inside of code fences.
+# http://rubular.com/r/TfCDNsy8x4
 startFencesPattern = /^`{3}.*$/
 endFencesPattern = /^`{3}$/
 
@@ -161,9 +162,12 @@ updateTaskListItem = (source, itemIndex, checked) ->
   inCodeBlock = false
   result = for line in source.split("\n")
     if inCodeBlock
+      # Lines inside of a code block are ignored.
       if line.match(endFencesPattern)
+        # Stop ignoring lines once the code block is closed.
         inCodeBlock = false
     else if line.match(startFencesPattern)
+      # Start ignoring lines inside a code block.
       inCodeBlock = true
     else if line in clean && line.match(itemPattern)
       index += 1

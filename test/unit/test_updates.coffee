@@ -565,6 +565,7 @@ asyncTest "updates items followed by links", ->
 
   item2Checkbox.click()
 
+# See https://github.com/deckar01/task_list/issues/3
 asyncTest "doesn't update items inside code blocks", ->
   expect 3
 
