@@ -1,0 +1,33 @@
+{
+  "name": "deckar01-task_list",
+  "version": "1.0.6",
+  "description": "Markdown TaskList components",
+  "main": "app/assets/javascripts/task_list.coffee",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "coffeelint app/assets/javascripts/task_list.coffee"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deckar01/task_list.git"
+  },
+  "keywords": [
+    "task",
+    "list",
+    "markdown",
+    "ruby",
+    "check"
+  ],
+  "author": "Jared Deckard <jared.deckard@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deckar01/task_list/issues"
+  },
+  "homepage": "https://github.com/deckar01/task_list#readme",
+  "devDependencies": {
+    "coffeelint": "^1.16.0"
+  }
+}
