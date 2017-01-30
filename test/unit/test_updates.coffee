@@ -1,3 +1,4 @@
+#= require jquery
 #= require task_list
 
 module "TaskList updates",
