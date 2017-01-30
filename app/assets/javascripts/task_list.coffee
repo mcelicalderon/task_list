@@ -94,6 +94,15 @@ closest = (el, className) ->
     el = el.parentNode
   el
 
+createEvent = (eventName, detail) ->
+  if typeof Event == 'function'
+    event = new Event eventName, {bubbles: true, cancelable: true}
+    event.detail = detail
+  else
+    event = document.createEvent 'CustomEvent'
+    event.initCustomEvent eventName, true, true, detail
+  event
+
 class TaskList
   constructor: (@el, method) ->
     @container = closest @el, 'js-task-list-container'
@@ -112,9 +121,7 @@ class TaskList
       forEach (checkbox) ->
         checkbox.disabled = false
       @container.classList.add 'is-task-list-enabled'
-      event = new Event 'tasklist:enabled',
-        cancelable: true
-        bubbles: true
+      event = createEvent 'tasklist:enabled'
       @container.dispatchEvent event
 
   disable: ->
@@ -125,9 +132,7 @@ class TaskList
     forEach (checkbox) ->
       checkbox.disabled = true
     @container.classList.remove('is-task-list-enabled')
-    event = new Event 'tasklist:disabled',
-      cancelable: true
-      bubbles: true
+    event = createEvent 'tasklist:disabled'
     @container.dispatchEvent event
 
   # Updates the field value to reflect the state of item.
@@ -137,24 +142,16 @@ class TaskList
     checkboxes = @container.querySelectorAll('.task-list-item-checkbox')
     index = 1 + NodeArray(checkboxes).indexOf item
 
-    changeEvent = new Event 'tasklist:change',
-      cancelable: true
-      bubbles: true
-    changeEvent.detail =
+    changeEvent = createEvent 'tasklist:change',
       index: index
       checked: item.checked
     @field.dispatchEvent changeEvent
 
     unless changeEvent.defaultPrevented
       @field.value = TaskList.updateSource(@field.value, index, item.checked)
-      changeEvent = new Event 'change',
-        cancelable: true
-        bubbles: true
+      changeEvent = createEvent 'change'
       @field.dispatchEvent changeEvent
-      changedEvent = new Event 'tasklist:changed',
-        cancelable: true
-        bubbles: true
-      changedEvent.detail =
+      changedEvent = createEvent 'tasklist:changed',
         index: index
         checked: item.checked
       @field.dispatchEvent changedEvent
