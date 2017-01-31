@@ -64,6 +64,10 @@ Rendered HTML (the `<ul>` element below) should be contained in a `js-task-list-
 Enable Task List updates with:
 
 ``` javascript
+// Vanilla JS API
+var container = document.querySelector('.js-task-list-container')
+new TaskList(container)
+// or jQuery API
 $('.js-task-list-container').taskList('enable')
 ```
 
@@ -120,7 +124,7 @@ to manage building your asset bundles.
 
 ### Dependencies
 
-At a high level, the Ruby components integrate with the [`html-pipeline`](https://github.com/jch/html-pipeline) library, and the frontend components depend on the jQuery library. The frontend components are written in CoffeeScript and need to be preprocessed for production use.
+At a high level, the Ruby components integrate with the [`html-pipeline`](https://github.com/jch/html-pipeline) library. The frontend components are vanilla JavaScript and include a thin jQuery wrapper that supports the original plugin interface. The frontend components are written in CoffeeScript and need to be preprocessed for production use.
 
 ## Testing and Development
 
