@@ -5,9 +5,5 @@ if ! bundle check 1>/dev/null 2>&1; then
   bundle install --no-color --binstubs --path vendor/gems
 fi
 
-if ! npm list bower 2>&1 | grep 0.8.5 >/dev/null; then
-  # npm install bower
-  npm install git://github.com/twitter/bower.git
-fi
-
+npm install
 bower install --no-color
