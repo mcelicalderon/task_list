@@ -104,13 +104,14 @@ createEvent = (eventName, detail) ->
   event
 
 class TaskList
-  constructor: (@el, method) ->
+  constructor: (@el) ->
     @container = closest @el, 'js-task-list-container'
     @field = @container.querySelector '.js-task-list-field'
     # When the task list item checkbox is updated, submit the change
     @container.addEventListener 'change', (event) =>
       if event.target.classList.contains 'task-list-item-checkbox'
         @updateTaskList(event.target)
+    @.enable()
 
   enable: ->
     if @container.querySelectorAll('.js-task-list-field').length > 0
@@ -253,5 +254,7 @@ if window.jQuery
       if !taskList
         taskList = new TaskList el
         jQuery(el).data 'task-list', taskList
+        if !method || method == 'enable'
+          return
 
       taskList[method || 'enable']()
