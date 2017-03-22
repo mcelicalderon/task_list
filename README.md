@@ -124,6 +124,8 @@ to manage building your asset bundles.
 
 ### Dependencies
 
+ - Ruby >= 2.1.0
+
 At a high level, the Ruby components integrate with the [`html-pipeline`](https://github.com/jch/html-pipeline) library. The frontend components are vanilla JavaScript and include a thin jQuery wrapper that supports the original plugin interface. The frontend components are written in CoffeeScript and need to be preprocessed for production use.
 
 [A polyfill for custom events](https://github.com/krambuhl/custom-event-polyfill) must be included to support IE10 and below.
