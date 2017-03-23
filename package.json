@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "script/cibuild",
     "qunit": "phantomjs test/run-qunit.coffee http://localhost:4018/test/index.html",
     "lint": "coffeelint app/assets/javascripts/task_list.coffee"
   },
