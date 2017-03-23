@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "qunit": "phantomjs test/run-qunit.coffee http://localhost:4018/test/index.html",
     "lint": "coffeelint app/assets/javascripts/task_list.coffee"
   },
   "repository": {
@@ -29,6 +30,7 @@
   "homepage": "https://github.com/deckar01/task_list#readme",
   "devDependencies": {
     "bower": "^1.8.0",
-    "coffeelint": "^1.16.0"
+    "coffeelint": "^1.16.0",
+    "phantomjs": "^1.9.19"
   }
 }
