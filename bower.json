@@ -7,7 +7,8 @@
     "jquery": ">= 1.9.1"
   },
   "devDependencies": {
-    "qunit": "^1.0.0"
+    "qunit": "^1.0.0",
+    "rails-behaviors": "^0.8.4"
   },
   "main": [
     "app/assets/javascripts/task_list.coffee",
