@@ -4,9 +4,19 @@
 
 [travis]: https://travis-ci.org/deckar01/task_list
 
-This package provides various components necessary for integrating
-[Task Lists](https://github.com/blog/1375-task-lists-in-gfm-issues-pulls-comments)
-into your Markdown user content.
+This is a community fork of GitHub's archived [`task_list`][task_list] gem.
+
+[task_list]: https://github.com/github-archive/task_list)
+
+```md
+- [x] Get
+- [x] More
+- [ ] Done
+```
+
+> - [x] Get
+> - [x] More
+> - [ ] Done
 
 ## Components
 
