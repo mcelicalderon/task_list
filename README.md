@@ -140,6 +140,26 @@ At a high level, the Ruby components integrate with the [`html-pipeline`](https:
 
 [A polyfill for custom events](https://github.com/krambuhl/custom-event-polyfill) must be included to support IE10 and below.
 
+### Upgrading
+
+#### 1.x to 2.x
+
+The event interface no longer passes data directly to the callbacks arguments
+list. Instead the CustomEvent API is used, which adds data to the
+`event.detail` object.
+
+```js
+// 1.x interface
+el.on('tasklist:changed', function(event, index, checked) {
+  console.log(index, checked)
+})
+
+// 2.x interface
+el.on('tasklist:changed', function(event) {
+  console.log(event.detail.index, event.detail.checked)
+})
+```
+
 ## Testing and Development
 
 JavaScript unit tests can be run with `script/testsuite`.
