@@ -9,7 +9,10 @@
   "scripts": {
     "test": "script/cibuild",
     "qunit": "phantomjs test/run-qunit.coffee http://localhost:4018/test/index.html",
-    "lint": "coffeelint app/assets/javascripts/task_list.coffee"
+    "lint": "coffeelint app/assets/javascripts/task_list.coffee",
+    "build:css": "node-sass -o dist/ app/assets/stylesheets/task_list.scss",
+    "build:js": "coffee -c -o dist/ app/assets/javascripts/task_list.coffee",
+    "build": "npm run build:css && npm run build:js"
   },
   "repository": {
     "type": "git",
@@ -30,7 +33,9 @@
   "homepage": "https://github.com/deckar01/task_list#readme",
   "devDependencies": {
     "bower": "^1.8.0",
+    "coffee-script": "^1.12.5",
     "coffeelint": "^1.16.0",
+    "node-sass": "^4.5.2",
     "phantomjs": "^1.9.19"
   }
 }
