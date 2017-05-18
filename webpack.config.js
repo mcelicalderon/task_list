@@ -1,7 +1,9 @@
 module.exports = {
   entry: './app/assets/javascripts/task_list.coffee',
   output: {
-    filename: 'dist/task_list.js'
+    filename: 'dist/task_list.js',
+    libraryTarget: 'var',
+    library: 'TaskList',
   },
   module: {
     loaders: [
