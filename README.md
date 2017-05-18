@@ -6,7 +6,7 @@
 
 This is a community fork of GitHub's archived [`task_list`][task_list] gem.
 
-[task_list]: https://github.com/github-archive/task_list)
+[task_list]: https://github.com/github-archive/task_list
 
 ```md
 - [x] Get
