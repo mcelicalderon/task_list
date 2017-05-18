@@ -2,7 +2,7 @@
   "name": "deckar01-task_list",
   "version": "2.0.0-rc.1",
   "description": "Markdown TaskList components",
-  "main": "app/assets/javascripts/task_list.coffee",
+  "main": "dist/task_list.js",
   "directories": {
     "test": "test"
   },
@@ -14,7 +14,7 @@
     "qunit": "phantomjs test/run-qunit.coffee http://localhost:4018/test/index.html",
     "lint": "coffeelint app/assets/javascripts/task_list.coffee",
     "build:css": "node-sass -o dist/ app/assets/stylesheets/task_list.scss",
-    "build:js": "coffee -c -b -o dist/ app/assets/javascripts/task_list.coffee",
+    "build:js": "webpack",
     "build": "npm run build:css && npm run build:js",
     "prepublish": "npm run build"
   },
@@ -37,9 +37,11 @@
   "homepage": "https://github.com/deckar01/task_list#readme",
   "devDependencies": {
     "bower": "^1.8.0",
+    "coffee-loader": "^0.7.3",
     "coffee-script": "^1.12.5",
     "coffeelint": "^1.16.0",
     "node-sass": "^4.5.2",
-    "phantomjs": "^1.9.19"
+    "phantomjs": "^1.9.19",
+    "webpack": "^2.5.1"
   }
 }

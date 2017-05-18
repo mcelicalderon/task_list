@@ -247,7 +247,7 @@ class TaskList
       line
     result.join("\n")
 
-if window.jQuery
+if this.jQuery
   jQuery.fn.taskList = (method) ->
     this.each (index, el) ->
       taskList = jQuery(el).data('task-list')
@@ -258,3 +258,5 @@ if window.jQuery
           return
 
       taskList[method || 'enable']()
+
+module.exports = TaskList;
