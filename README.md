@@ -101,11 +101,15 @@ And then execute:
 
     $ bundle
 
+### Frontend: NPM / Yarn
+
+For the frontend components, add `deckar01-task_list` to your npm dependencies config.
+
+This is the preferred method for including the frontend assets in your application.
+
 ### Frontend: Bower
 
 For the frontend components, add `deckar01-task_list` to your Bower dependencies config.
-
-This is the preferred method for including the frontend assets in your application. Alternatively, for Rails methods using `Sprockets`, see below.
 
 ### Frontend: Rails 3+ Railtie method
 
