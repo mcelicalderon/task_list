@@ -259,4 +259,4 @@ if this.jQuery
 
       taskList[method || 'enable']()
 
-module.exports = TaskList;
+module.exports = TaskList
