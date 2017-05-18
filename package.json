@@ -6,13 +6,17 @@
   "directories": {
     "test": "test"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "script/cibuild",
     "qunit": "phantomjs test/run-qunit.coffee http://localhost:4018/test/index.html",
     "lint": "coffeelint app/assets/javascripts/task_list.coffee",
     "build:css": "node-sass -o dist/ app/assets/stylesheets/task_list.scss",
-    "build:js": "coffee -c -o dist/ app/assets/javascripts/task_list.coffee",
-    "build": "npm run build:css && npm run build:js"
+    "build:js": "coffee -c -b -o dist/ app/assets/javascripts/task_list.coffee",
+    "build": "npm run build:css && npm run build:js",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
