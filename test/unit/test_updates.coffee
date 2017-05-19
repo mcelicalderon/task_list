@@ -1,3 +1,4 @@
+#= require jquery
 #= require task_list
 
 module "TaskList updates",
@@ -255,9 +256,9 @@ module "TaskList updates",
 asyncTest "updates the source, marking the incomplete item as complete", ->
   expect 3
 
-  @field.on 'tasklist:changed', (event, index, checked) =>
-    ok checked
-    equal index, @incompleteItem.expectedIndex
+  @field.on 'tasklist:changed', (event) =>
+    ok event.detail.checked
+    equal event.detail.index, @incompleteItem.expectedIndex
     equal @field.val(), @changes.toIncomplete
 
   setTimeout ->
@@ -269,9 +270,9 @@ asyncTest "updates the source, marking the incomplete item as complete", ->
 asyncTest "updates the source, marking the complete item as incomplete", ->
   expect 3
 
-  @field.on 'tasklist:changed', (event, index, checked) =>
-    ok !checked
-    equal index, @completeItem.expectedIndex
+  @field.on 'tasklist:changed', (event) =>
+    ok !event.detail.checked
+    equal event.detail.index, @completeItem.expectedIndex
     equal @field.val(), @changes.toComplete
 
   setTimeout ->
@@ -284,9 +285,9 @@ asyncTest "updates the source, marking the complete item as incomplete", ->
 asyncTest "updates the source for items with non-breaking spaces", ->
   expect 3
 
-  @field.on 'tasklist:changed', (event, index, checked) =>
-    ok checked
-    equal index, @incompleteNBSPItem.expectedIndex
+  @field.on 'tasklist:changed', (event) =>
+    ok event.detail.checked
+    equal event.detail.index, @incompleteNBSPItem.expectedIndex
     equal @field.val(), @changes.toIncompleteNBSP
 
   setTimeout ->
@@ -298,9 +299,9 @@ asyncTest "updates the source for items with non-breaking spaces", ->
 asyncTest "updates the source of a quoted item, marking the incomplete item as complete", ->
   expect 3
 
-  @field.on 'tasklist:changed', (event, index, checked) =>
-    ok checked
-    equal index, @quotedIncompleteItem.expectedIndex
+  @field.on 'tasklist:changed', (event) =>
+    ok event.detail.checked
+    equal event.detail.index, @quotedIncompleteItem.expectedIndex
     equal @field.val(), @changes.toQuotedIncomplete
 
   setTimeout ->
@@ -312,9 +313,9 @@ asyncTest "updates the source of a quoted item, marking the incomplete item as c
 asyncTest "updates the source of a quoted item, marking the complete item as incomplete", ->
   expect 3
 
-  @field.on 'tasklist:changed', (event, index, checked) =>
-    ok !checked
-    equal index, @quotedCompleteItem.expectedIndex
+  @field.on 'tasklist:changed', (event) =>
+    ok !event.detail.checked
+    equal event.detail.index, @quotedCompleteItem.expectedIndex
     equal @field.val(), @changes.toQuotedComplete
 
   setTimeout ->
@@ -326,9 +327,9 @@ asyncTest "updates the source of a quoted item, marking the complete item as inc
 asyncTest "updates the source of a quoted quoted item, marking the incomplete item as complete", ->
   expect 3
 
-  @field.on 'tasklist:changed', (event, index, checked) =>
-    ok checked
-    equal index, @innerIncompleteItem.expectedIndex
+  @field.on 'tasklist:changed', (event) =>
+    ok event.detail.checked
+    equal event.detail.index, @innerIncompleteItem.expectedIndex
     equal @field.val(), @changes.toInnerIncomplete
 
   setTimeout ->
@@ -340,9 +341,9 @@ asyncTest "updates the source of a quoted quoted item, marking the incomplete it
 asyncTest "updates the source of a quoted quoted item, marking the complete item as incomplete", ->
   expect 3
 
-  @field.on 'tasklist:changed', (event, index, checked) =>
-    ok !checked
-    equal index, @innerCompleteItem.expectedIndex
+  @field.on 'tasklist:changed', (event) =>
+    ok !event.detail.checked
+    equal event.detail.index, @innerCompleteItem.expectedIndex
     equal @field.val(), @changes.toInnerComplete
 
   setTimeout ->
@@ -354,9 +355,9 @@ asyncTest "updates the source of a quoted quoted item, marking the complete item
 asyncTest "updates the source of an ordered list item, marking the incomplete item as complete", ->
   expect 3
 
-  @field.on 'tasklist:changed', (event, index, checked) =>
-    ok checked
-    equal index, @orderedIncompleteItem.expectedIndex
+  @field.on 'tasklist:changed', (event) =>
+    ok event.detail.checked
+    equal event.detail.index, @orderedIncompleteItem.expectedIndex
     equal @field.val(), @changes.toOrderedIncomplete
 
   setTimeout ->
@@ -368,9 +369,9 @@ asyncTest "updates the source of an ordered list item, marking the incomplete it
 asyncTest "updates the source of an ordered list item, marking the complete item as incomplete", ->
   expect 3
 
-  @field.on 'tasklist:changed', (event, index, checked) =>
-    ok !checked
-    equal index, @orderedCompleteItem.expectedIndex
+  @field.on 'tasklist:changed', (event) =>
+    ok !event.detail.checked
+    equal event.detail.index, @orderedCompleteItem.expectedIndex
     equal @field.val(), @changes.toOrderedComplete
 
   setTimeout ->
@@ -430,9 +431,9 @@ asyncTest "update ignores items that look like Task List items but lack list pre
   $('#qunit-fixture').append(container)
   container.taskList()
 
-  field.on 'tasklist:changed', (event, index, checked) =>
-    ok checked
-    equal index, item2.expectedIndex
+  field.on 'tasklist:changed', (event) =>
+    ok event.detail.checked
+    equal event.detail.index, item2.expectedIndex
     equal field.val(), changes
 
   setTimeout ->
@@ -496,9 +497,9 @@ asyncTest "update ignores items that look like Task List items but are links", -
   $('#qunit-fixture').append(container)
   container.taskList()
 
-  field.on 'tasklist:changed', (event, index, checked) =>
-    ok checked
-    equal index, item2.expectedIndex
+  field.on 'tasklist:changed', (event) =>
+    ok event.detail.checked
+    equal event.detail.index, item2.expectedIndex
     equal field.val(), changes
 
   setTimeout ->
@@ -554,9 +555,9 @@ asyncTest "updates items followed by links", ->
   $('#qunit-fixture').append(container)
   container.taskList()
 
-  field.on 'tasklist:changed', (event, index, checked) =>
-    ok checked
-    equal index, item2.expectedIndex
+  field.on 'tasklist:changed', (event) =>
+    ok event.detail.checked
+    equal event.detail.index, item2.expectedIndex
     equal field.val(), changes
 
   setTimeout ->
@@ -621,9 +622,9 @@ asyncTest "doesn't update items inside code blocks", ->
   $('#qunit-fixture').append(container)
   container.taskList()
 
-  field.on 'tasklist:changed', (event, index, checked) =>
-    ok checked
-    equal index, item2.expectedIndex
+  field.on 'tasklist:changed', (event) =>
+    ok event.detail.checked
+    equal event.detail.index, item2.expectedIndex
     equal field.val(), changes
 
   setTimeout ->

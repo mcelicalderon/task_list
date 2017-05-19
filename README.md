@@ -4,9 +4,19 @@
 
 [travis]: https://travis-ci.org/deckar01/task_list
 
-This package provides various components necessary for integrating
-[Task Lists](https://github.com/blog/1375-task-lists-in-gfm-issues-pulls-comments)
-into your Markdown user content.
+This is a community fork of GitHub's archived [`task_list`][task_list] gem.
+
+[task_list]: https://github.com/github-archive/task_list
+
+```md
+- [x] Get
+- [x] More
+- [ ] Done
+```
+
+> - [x] Get
+> - [x] More
+> - [ ] Done
 
 ## Components
 
@@ -64,6 +74,10 @@ Rendered HTML (the `<ul>` element below) should be contained in a `js-task-list-
 Enable Task List updates with:
 
 ``` javascript
+// Vanilla JS API
+var container = document.querySelector('.js-task-list-container')
+new TaskList(container)
+// or jQuery API
 $('.js-task-list-container').taskList('enable')
 ```
 
@@ -87,11 +101,15 @@ And then execute:
 
     $ bundle
 
+### Frontend: NPM / Yarn
+
+For the frontend components, add `deckar01-task_list` to your npm dependencies config.
+
+This is the preferred method for including the frontend assets in your application.
+
 ### Frontend: Bower
 
 For the frontend components, add `deckar01-task_list` to your Bower dependencies config.
-
-This is the preferred method for including the frontend assets in your application. Alternatively, for Rails methods using `Sprockets`, see below.
 
 ### Frontend: Rails 3+ Railtie method
 
@@ -120,7 +138,31 @@ to manage building your asset bundles.
 
 ### Dependencies
 
-At a high level, the Ruby components integrate with the [`html-pipeline`](https://github.com/jch/html-pipeline) library, and the frontend components depend on the jQuery library. The frontend components are written in CoffeeScript and need to be preprocessed for production use.
+ - Ruby >= 2.1.0
+
+At a high level, the Ruby components integrate with the [`html-pipeline`](https://github.com/jch/html-pipeline) library. The frontend components are vanilla JavaScript and include a thin jQuery wrapper that supports the original plugin interface. The frontend components are written in CoffeeScript and need to be preprocessed for production use.
+
+[A polyfill for custom events](https://github.com/krambuhl/custom-event-polyfill) must be included to support IE10 and below.
+
+### Upgrading
+
+#### 1.x to 2.x
+
+The event interface no longer passes data directly to the callbacks arguments
+list. Instead the CustomEvent API is used, which adds data to the
+`event.detail` object.
+
+```js
+// 1.x interface
+el.on('tasklist:changed', function(event, index, checked) {
+  console.log(index, checked)
+})
+
+// 2.x interface
+el.on('tasklist:changed', function(event) {
+  console.log(event.detail.index, event.detail.checked)
+})
+```
 
 ## Testing and Development
 

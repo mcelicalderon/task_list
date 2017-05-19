@@ -2,5 +2,6 @@
 # Usage: script/cibuild
 # CI build script.
 
+npm run lint
 ./script/testsuite 4018
 bundle exec rake test

@@ -1,11 +1,6 @@
 # TaskList Behavior
 #
-#= provides tasklist:enabled
-#= provides tasklist:disabled
-#= provides tasklist:change
-#= provides tasklist:changed
-#
-#= require jquery
+#= provides TaskList
 #
 # Enables Task List update behavior.
 #
@@ -38,8 +33,6 @@
 #
 # TaskList updates trigger `tasklist:change` events. If the change is
 # successful, `tasklist:changed` is fired. The change can be canceled.
-#
-# jQuery is required.
 #
 # ### Methods
 #
@@ -94,145 +87,176 @@
 # Task list checkboxes are rendered as disabled by default because rendered
 # user content is cached without regard for the viewer.
 
-incomplete = "[ ]"
-complete   = "[x]"
+NodeArray = (nodeList) -> Array.prototype.slice.apply(nodeList)
 
-# Escapes the String for regular expression matching.
-escapePattern = (str) ->
-  str.
-    replace(/([\[\]])/g, "\\$1"). # escape square brackets
-    replace(/\s/, "\\s").         # match all white space
-    replace("x", "[xX]")          # match all cases
+closest = (el, className) ->
+  while el && !el.classList.contains className
+    el = el.parentNode
+  el
 
-incompletePattern = ///
-  #{escapePattern(incomplete)}
-///
-completePattern = ///
-  #{escapePattern(complete)}
-///
+createEvent = (eventName, detail) ->
+  if typeof Event == 'function'
+    event = new Event eventName, {bubbles: true, cancelable: true}
+    event.detail = detail
+  else
+    event = document.createEvent 'CustomEvent'
+    event.initCustomEvent eventName, true, true, detail
+  event
 
-# Pattern used to identify all task list items.
-# Useful when you need iterate over all items.
-itemPattern = ///
-  ^
-  (?:                     # prefix, consisting of
-    \s*                   # optional leading whitespace
-    (?:>\s*)*             # zero or more blockquotes
-    (?:[-+*]|(?:\d+\.))   # list item indicator
-  )
-  \s*                     # optional whitespace prefix
-  (                       # checkbox
-    #{escapePattern(complete)}|
-    #{escapePattern(incomplete)}
-  )
-  \s+                     # is followed by whitespace
-  (?!
-    \(.*?\)               # is not part of a [foo](url) link
-  )
-  (?=                     # and is followed by zero or more links
-    (?:\[.*?\]\s*(?:\[.*?\]|\(.*?\))\s*)*
-    (?:[^\[]|$)           # and either a non-link or the end of the string
-  )
-///
+class TaskList
+  constructor: (@el) ->
+    @container = closest @el, 'js-task-list-container'
+    @field = @container.querySelector '.js-task-list-field'
+    # When the task list item checkbox is updated, submit the change
+    @container.addEventListener 'change', (event) =>
+      if event.target.classList.contains 'task-list-item-checkbox'
+        @updateTaskList(event.target)
+    @.enable()
 
-# Used to skip checkbox markup inside of code fences.
-# http://rubular.com/r/TfCDNsy8x4
-startFencesPattern = /^`{3}.*$/
-endFencesPattern = /^`{3}$/
+  enable: ->
+    if @container.querySelectorAll('.js-task-list-field').length > 0
+      NodeArray(@container.querySelectorAll('.task-list-item')).
+      forEach (item) ->
+        item.classList.add('enabled')
+      NodeArray(@container.querySelectorAll('.task-list-item-checkbox')).
+      forEach (checkbox) ->
+        checkbox.disabled = false
+      @container.classList.add 'is-task-list-enabled'
+      event = createEvent 'tasklist:enabled'
+      @container.dispatchEvent event
 
-# Used to filter out potential mismatches (items not in lists).
-# http://rubular.com/r/OInl6CiePy
-itemsInParasPattern = ///
-  ^
-  (
-    #{escapePattern(complete)}|
-    #{escapePattern(incomplete)}
-  )
-  .+
-  $
-///g
+  disable: ->
+    NodeArray(@container.querySelectorAll('.task-list-item')).
+    forEach (item) ->
+      item.classList.remove('enabled')
+    NodeArray(@container.querySelectorAll('.task-list-item-checkbox')).
+    forEach (checkbox) ->
+      checkbox.disabled = true
+    @container.classList.remove('is-task-list-enabled')
+    event = createEvent 'tasklist:disabled'
+    @container.dispatchEvent event
 
-# Given the source text, updates the appropriate task list item to match the
-# given checked value.
-#
-# Returns the updated String text.
-updateTaskListItem = (source, itemIndex, checked) ->
-  clean = source.replace(/\r/g, '').replace(itemsInParasPattern, '').split("\n")
-  index = 0
-  inCodeBlock = false
-  result = for line in source.split("\n")
-    if inCodeBlock
-      # Lines inside of a code block are ignored.
-      if line.match(endFencesPattern)
-        # Stop ignoring lines once the code block is closed.
-        inCodeBlock = false
-    else if line.match(startFencesPattern)
-      # Start ignoring lines inside a code block.
-      inCodeBlock = true
-    else if line in clean && line.match(itemPattern)
-      index += 1
-      if index == itemIndex
-        line =
-          if checked
-            line.replace(incompletePattern, complete)
-          else
-            line.replace(completePattern, incomplete)
-    line
-  result.join("\n")
+  # Updates the field value to reflect the state of item.
+  # Triggers the `tasklist:change` event before the value has changed, and fires
+  # a `tasklist:changed` event once the value has changed.
+  updateTaskList: (item) ->
+    checkboxes = @container.querySelectorAll('.task-list-item-checkbox')
+    index = 1 + NodeArray(checkboxes).indexOf item
 
-# Updates the $field value to reflect the state of $item.
-# Triggers the `tasklist:change` event before the value has changed, and fires
-# a `tasklist:changed` event once the value has changed.
-updateTaskList = ($item) ->
-  $container = $item.closest '.js-task-list-container'
-  $field     = $container.find '.js-task-list-field'
-  index      = 1 + $container.find('.task-list-item-checkbox').index($item)
-  checked    = $item.prop 'checked'
+    changeEvent = createEvent 'tasklist:change',
+      index: index
+      checked: item.checked
+    @field.dispatchEvent changeEvent
 
-  event = $.Event 'tasklist:change'
-  $field.trigger event, [index, checked]
+    unless changeEvent.defaultPrevented
+      @field.value = TaskList.updateSource(@field.value, index, item.checked)
+      changeEvent = createEvent 'change'
+      @field.dispatchEvent changeEvent
+      changedEvent = createEvent 'tasklist:changed',
+        index: index
+        checked: item.checked
+      @field.dispatchEvent changedEvent
 
-  unless event.isDefaultPrevented()
-    $field.val updateTaskListItem($field.val(), index, checked)
-    $field.trigger 'change'
-    $field.trigger 'tasklist:changed', [index, checked]
+  # Static interface
 
-# When the task list item checkbox is updated, submit the change
-$(document).on 'change', '.task-list-item-checkbox', ->
-  updateTaskList $(this)
+  @incomplete: "[ ]"
+  @complete: "[x]"
 
-# Enables TaskList item changes.
-enableTaskList = ($container) ->
-  if $container.find('.js-task-list-field').length > 0
-    $container.
-      find('.task-list-item').addClass('enabled').
-      find('.task-list-item-checkbox').attr('disabled', null)
-    $container.addClass('is-task-list-enabled').
-      trigger 'tasklist:enabled'
+  # Escapes the String for regular expression matching.
+  @escapePattern: (str) ->
+    str.
+      replace(/([\[\]])/g, "\\$1"). # escape square brackets
+      replace(/\s/, "\\s").         # match all white space
+      replace("x", "[xX]")          # match all cases
 
-# Enables a collection of TaskList containers.
-enableTaskLists = ($containers) ->
-  for container in $containers
-    enableTaskList $(container)
+  @incompletePattern: ///
+    #{@escapePattern(@incomplete)}
+  ///
+  @completePattern: ///
+    #{@escapePattern(@complete)}
+  ///
 
-# Disable TaskList item changes.
-disableTaskList = ($container) ->
-  $container.
-    find('.task-list-item').removeClass('enabled').
-    find('.task-list-item-checkbox').attr('disabled', 'disabled')
-  $container.removeClass('is-task-list-enabled').
-    trigger 'tasklist:disabled'
+  # Pattern used to identify all task list items.
+  # Useful when you need iterate over all items.
+  @itemPattern: ///
+    ^
+    (?:                     # prefix, consisting of
+      \s*                   # optional leading whitespace
+      (?:>\s*)*             # zero or more blockquotes
+      (?:[-+*]|(?:\d+\.))   # list item indicator
+    )
+    \s*                     # optional whitespace prefix
+    (                       # checkbox
+      #{@escapePattern(@complete)}|
+      #{@escapePattern(@incomplete)}
+    )
+    \s+                     # is followed by whitespace
+    (?!
+      \(.*?\)               # is not part of a [foo](url) link
+    )
+    (?=                     # and is followed by zero or more links
+      (?:\[.*?\]\s*(?:\[.*?\]|\(.*?\))\s*)*
+      (?:[^\[]|$)           # and either a non-link or the end of the string
+    )
+  ///
 
-# Disables a collection of TaskList containers.
-disableTaskLists = ($containers) ->
-  for container in $containers
-    disableTaskList $(container)
+  # Used to skip checkbox markup inside of code fences.
+  # http://rubular.com/r/TfCDNsy8x4
+  @startFencesPattern: /^`{3}.*$/
+  @endFencesPattern: /^`{3}$/
 
-$.fn.taskList = (method) ->
-  $container = $(this).closest('.js-task-list-container')
+  # Used to filter out potential mismatches (items not in lists).
+  # http://rubular.com/r/OInl6CiePy
+  @itemsInParasPattern: ///
+    ^
+    (
+      #{@escapePattern(@complete)}|
+      #{@escapePattern(@incomplete)}
+    )
+    .+
+    $
+  ///g
 
-  methods =
-    enable: enableTaskLists
-    disable: disableTaskLists
+  # Given the source text, updates the appropriate task list item to match the
+  # given checked value.
+  #
+  # Returns the updated String text.
+  @updateSource: (source, itemIndex, checked) ->
+    clean = source.replace(/\r/g, '').
+      replace(@itemsInParasPattern, '').
+      split("\n")
+    index = 0
+    inCodeBlock = false
+    result = for line in source.split("\n")
+      if inCodeBlock
+        # Lines inside of a code block are ignored.
+        if line.match(@endFencesPattern)
+          # Stop ignoring lines once the code block is closed.
+          inCodeBlock = false
+      else if line.match(@startFencesPattern)
+        # Start ignoring lines inside a code block.
+        inCodeBlock = true
+      else if line in clean && line.match(@itemPattern)
+        index += 1
+        if index == itemIndex
+          line =
+            if checked
+              line.replace(@incompletePattern, @complete)
+            else
+              line.replace(@completePattern, @incomplete)
+      line
+    result.join("\n")
 
-  methods[method || 'enable']($container)
+if typeof jQuery != 'undefined'
+  jQuery.fn.taskList = (method) ->
+    this.each (index, el) ->
+      taskList = jQuery(el).data('task-list')
+      if !taskList
+        taskList = new TaskList el
+        jQuery(el).data 'task-list', taskList
+        if !method || method == 'enable'
+          return
+
+      taskList[method || 'enable']()
+
+module.exports = TaskList
