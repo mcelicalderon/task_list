@@ -247,7 +247,7 @@ class TaskList
       line
     result.join("\n")
 
-if this.jQuery
+if typeof jQuery != 'undefined'
   jQuery.fn.taskList = (method) ->
     this.each (index, el) ->
       taskList = jQuery(el).data('task-list')
