@@ -190,14 +190,7 @@ class TaskList
       #{@escapePattern(@complete)}|
       #{@escapePattern(@incomplete)}
     )
-    \s+                     # is followed by whitespace
-    (?!
-      \(.*?\)               # is not part of a [foo](url) link
-    )
-    (?=                     # and is followed by zero or more links
-      (?:\[.*?\]\s*(?:\[.*?\]|\(.*?\))\s*)*
-      (?:[^\[]|$)           # and either a non-link or the end of the string
-    )
+    \s                      # is followed by whitespace
   ///
 
   # Used to skip checkbox markup inside of code fences.
