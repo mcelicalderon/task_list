@@ -1,5 +1,4 @@
 fs = require 'fs'
-print = (s) -> fs.write "/dev/stderr", s, 'w'
 
 page = new WebPage()
 page.onConsoleMessage = (msg) -> console.error msg
@@ -29,7 +28,7 @@ page.open phantom.args[0], ->
     return unless tests
     for test in tests when test
       deferTimeout()
-      print test
+      console.error test
 
     result = page.evaluate ->
       result = document.getElementById('qunit-testresult')
