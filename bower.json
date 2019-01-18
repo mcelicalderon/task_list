@@ -4,7 +4,7 @@
   "description": "Markdown TaskList components",
   "homepage": "https://github.com/deckar01/task_list",
   "devDependencies": {
-    "jquery": ">= 1.9.1",
+    "jquery": ">= 1.9.1 <3",
     "qunit": "^1.0.0",
     "rails-behaviors": "^0.8.4"
   },
