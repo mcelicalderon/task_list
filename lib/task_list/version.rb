@@ -1,3 +1,3 @@
 class TaskList
-  VERSION = [2, 0, 1].join('.')
+  VERSION = [2, 1, 0].join('.')
 end
