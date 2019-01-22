@@ -30,10 +30,10 @@ class TaskList
     #
     # Examples
     #
-    #   Item.new(checkbox_text: "- [x]").complete?
+    #   Item.new("- [x]").complete?
     #   # => true
     #
-    #   Item.new(checkbox_text: "- [ ]").complete?
+    #   Item.new("- [ ]").complete?
     #   # => false
     #
     # Returns true for checked list, false otherwise
