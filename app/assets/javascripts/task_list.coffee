@@ -238,7 +238,7 @@ class TaskList
       else if line.match(@startFencesPattern)
         # Start ignoring lines inside a code block.
         inCodeBlock = true
-      else if line in clean && line.match(@itemPattern)
+      else if line in clean && line.trim().match(@itemPattern)
         index += 1
         if index == itemIndex
           lineNumber = i + 1
