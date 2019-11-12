@@ -73,6 +73,9 @@
   <div class="js-task-list-container js-task-list-enable">
     <div class="markdown">
       <ul class="task-list">
+        <li>
+          [ ]
+        </li>
         <li class="task-list-item">
           <input type="checkbox" class="task-list-item-checkbox" disabled />
           I'm a task list item
@@ -93,6 +96,7 @@
     </div>
     <form action="/update" method="POST" data-remote data-type="json">
       <textarea name="comment[body]" class="js-task-list-field" cols="40" rows="10">
+- [ ]  
 - [ ] I'm a task list item
 - [ ] with non-breaking space
 - [x] completed, lower
