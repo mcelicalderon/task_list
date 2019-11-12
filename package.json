@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "test": "script/cibuild",
-    "qunit": "phantomjs test/run-qunit.coffee http://localhost:4018/test/index.html",
+    "qunit": "karma start test/unit/config.js",
     "lint": "coffeelint app/assets/javascripts/task_list.coffee",
     "build:css": "node-sass -o dist/ app/assets/stylesheets/task_list.scss",
     "build:js": "webpack",
@@ -37,11 +37,19 @@
   "homepage": "https://github.com/deckar01/task_list#readme",
   "devDependencies": {
     "bower": "^1.8.0",
-    "coffee-loader": "^0.7.3",
-    "coffee-script": "^1.12.5",
+    "coffee-loader": "^0.9.0",
     "coffeelint": "^1.16.0",
+    "coffeescript": "^2.4.1",
+    "jquery": "^2.2.4",
+    "karma": "^4.4.1",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-qunit": "^4.0.0",
+    "karma-webpack": "^4.0.2",
     "node-sass": "^4.5.2",
     "phantomjs": "^1.9.19",
-    "webpack": "^2.5.1"
-  }
+    "qunit": "^2.9.3",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {}
 }

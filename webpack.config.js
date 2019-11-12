@@ -6,7 +6,7 @@ module.exports = {
     library: 'TaskList',
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.coffee$/,
         loader: 'coffee-loader'

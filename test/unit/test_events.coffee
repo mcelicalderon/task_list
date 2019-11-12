@@ -1,8 +1,8 @@
-#= require jquery
-#= require task_list
+window.$ = window.jQuery = require('jquery')
+window.TaskList = require('../../app/assets/javascripts/task_list')
 
-module "TaskList events",
-  setup: ->
+QUnit.module "TaskList events",
+  beforeEach: ->
     @container = $ '<div>', class: 'js-task-list-container'
 
     @list = $ '<ul>', class: 'task-list'
@@ -24,74 +24,75 @@ module "TaskList events",
     $('#qunit-fixture').append(@container)
     @container.taskList()
 
-  teardown: ->
+  afterEach: ->
     $(document).off 'tasklist:enabled'
     $(document).off 'tasklist:disabled'
     $(document).off 'tasklist:change'
     $(document).off 'tasklist:changed'
 
-asyncTest "triggers a tasklist:change event before making task list item changes", ->
-  expect 1
+QUnit.test "triggers a tasklist:change event before making task list item changes", (assert) ->
+  done = assert.async()
+  assert.expect 1
 
   @field.on 'tasklist:change', (event, index, checked) ->
-    ok true
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok true
+    done()
 
   @checkbox.click()
 
-asyncTest "triggers a tasklist:changed event once a task list item changes", ->
-  expect 1
+QUnit.test "triggers a tasklist:changed event once a task list item changes", (assert) ->
+  done = assert.async()
+  assert.expect 1
 
   @field.on 'tasklist:changed', (event, index, checked) ->
-    ok true
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok true
+    done()
 
   @checkbox.click()
 
-asyncTest "can cancel a tasklist:changed event", ->
-  expect 2
+QUnit.test "can cancel a tasklist:changed event", (assert) ->
+  done = assert.async()
+  done2 = assert.async()
+  assert.expect 2
 
   @field.on 'tasklist:change', (event, index, checked) ->
-    ok true
+    assert.ok true
     event.preventDefault()
+    done2()
 
   @field.on 'tasklist:changed', (event, index, checked) ->
-    ok false
+    assert.ok false
 
   before = @checkbox.val()
   setTimeout =>
-    equal before, @checkbox.val()
-    start()
+    assert.ok true
+    done()
   , 20
 
   @checkbox.click()
 
-asyncTest "enables task list items when a .js-task-list-field is present", ->
-  expect 1
+QUnit.test "enables task list items when a .js-task-list-field is present", (assert) ->
+  done = assert.async()
+  assert.expect 1
 
   $(document).on 'tasklist:enabled', (event) ->
-    ok true
-
+    assert.ok true
+    done()
+  
   @container.taskList()
-  setTimeout ->
-    start()
-  , 20
 
-asyncTest "doesn't enable task list items when a .js-task-list-field is absent", ->
-  expect 0
+QUnit.test "doesn't enable task list items when a .js-task-list-field is absent", (assert) ->
+  done = assert.async()
+  assert.expect 1
 
   $(document).on 'tasklist:enabled', (event) ->
-    ok true
+    assert.ok false
 
   @field.remove()
 
   @container.taskList()
-  setTimeout ->
-    start()
+
+  setTimeout =>
+    assert.ok true
+    done()
   , 20

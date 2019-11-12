@@ -3,5 +3,5 @@
 # CI build script.
 
 npm run lint
-./script/testsuite 4018
+npm run qunit
 bundle exec rake test
