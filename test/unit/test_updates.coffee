@@ -1,8 +1,8 @@
-#= require jquery
-#= require task_list
+window.$ = window.jQuery = require('jquery')
+window.TaskList = require('../../app/assets/javascripts/task_list')
 
-module "TaskList updates",
-  setup: ->
+QUnit.module "TaskList updates",
+  beforeEach: ->
     @container = $ '<div>', class: 'js-task-list-container'
 
     @list = $ '<ul>', class: 'task-list'
@@ -250,138 +250,121 @@ module "TaskList updates",
     $('#qunit-fixture').append(@container)
     @container.taskList()
 
-  teardown: ->
+  afterEach: ->
     $(document).off 'tasklist:changed'
 
-asyncTest "updates the source, marking the incomplete item as complete", ->
-  expect 3
+QUnit.test "updates the source, marking the incomplete item as complete", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   @field.on 'tasklist:changed', (event) =>
-    ok event.detail.checked
-    equal event.detail.index, @incompleteItem.expectedIndex
-    equal @field.val(), @changes.toIncomplete
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok event.detail.checked
+    assert.equal event.detail.index, @incompleteItem.expectedIndex
+    assert.equal @field.val(), @changes.toIncomplete
+    done()
 
   @incompleteCheckbox.click()
 
-asyncTest "updates the source, marking the complete item as incomplete", ->
-  expect 3
+QUnit.test "updates the source, marking the complete item as incomplete", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   @field.on 'tasklist:changed', (event) =>
-    ok !event.detail.checked
-    equal event.detail.index, @completeItem.expectedIndex
-    equal @field.val(), @changes.toComplete
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok !event.detail.checked
+    assert.equal event.detail.index, @completeItem.expectedIndex
+    assert.equal @field.val(), @changes.toComplete
+    done()
 
   @completeCheckbox.click()
 
 # See: https://github.com/github/task-lists/pull/14
-asyncTest "updates the source for items with non-breaking spaces", ->
-  expect 3
+QUnit.test "updates the source for items with non-breaking spaces", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   @field.on 'tasklist:changed', (event) =>
-    ok event.detail.checked
-    equal event.detail.index, @incompleteNBSPItem.expectedIndex
-    equal @field.val(), @changes.toIncompleteNBSP
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok event.detail.checked
+    assert.equal event.detail.index, @incompleteNBSPItem.expectedIndex
+    assert.equal @field.val(), @changes.toIncompleteNBSP
+    done()
 
   @incompleteNBSPCheckbox.click()
 
-asyncTest "updates the source of a quoted item, marking the incomplete item as complete", ->
-  expect 3
+QUnit.test "updates the source of a quoted item, marking the incomplete item as complete", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   @field.on 'tasklist:changed', (event) =>
-    ok event.detail.checked
-    equal event.detail.index, @quotedIncompleteItem.expectedIndex
-    equal @field.val(), @changes.toQuotedIncomplete
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok event.detail.checked
+    assert.equal event.detail.index, @quotedIncompleteItem.expectedIndex
+    assert.equal @field.val(), @changes.toQuotedIncomplete
+    done()
 
   @quotedIncompleteCheckbox.click()
 
-asyncTest "updates the source of a quoted item, marking the complete item as incomplete", ->
-  expect 3
+QUnit.test "updates the source of a quoted item, marking the complete item as incomplete", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   @field.on 'tasklist:changed', (event) =>
-    ok !event.detail.checked
-    equal event.detail.index, @quotedCompleteItem.expectedIndex
-    equal @field.val(), @changes.toQuotedComplete
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok !event.detail.checked
+    assert.equal event.detail.index, @quotedCompleteItem.expectedIndex
+    assert.equal @field.val(), @changes.toQuotedComplete
+    done()
 
   @quotedCompleteCheckbox.click()
 
-asyncTest "updates the source of a quoted quoted item, marking the incomplete item as complete", ->
-  expect 3
+QUnit.test "updates the source of a quoted quoted item, marking the incomplete item as complete", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   @field.on 'tasklist:changed', (event) =>
-    ok event.detail.checked
-    equal event.detail.index, @innerIncompleteItem.expectedIndex
-    equal @field.val(), @changes.toInnerIncomplete
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok event.detail.checked
+    assert.equal event.detail.index, @innerIncompleteItem.expectedIndex
+    assert.equal @field.val(), @changes.toInnerIncomplete
+    done()
 
   @innerIncompleteCheckbox.click()
 
-asyncTest "updates the source of a quoted quoted item, marking the complete item as incomplete", ->
-  expect 3
+QUnit.test "updates the source of a quoted quoted item, marking the complete item as incomplete", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   @field.on 'tasklist:changed', (event) =>
-    ok !event.detail.checked
-    equal event.detail.index, @innerCompleteItem.expectedIndex
-    equal @field.val(), @changes.toInnerComplete
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok !event.detail.checked
+    assert.equal event.detail.index, @innerCompleteItem.expectedIndex
+    assert.equal @field.val(), @changes.toInnerComplete
+    done()
 
   @innerCompleteCheckbox.click()
 
-asyncTest "updates the source of an ordered list item, marking the incomplete item as complete", ->
-  expect 3
+QUnit.test "updates the source of an ordered list item, marking the incomplete item as complete", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   @field.on 'tasklist:changed', (event) =>
-    ok event.detail.checked
-    equal event.detail.index, @orderedIncompleteItem.expectedIndex
-    equal @field.val(), @changes.toOrderedIncomplete
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok event.detail.checked
+    assert.equal event.detail.index, @orderedIncompleteItem.expectedIndex
+    assert.equal @field.val(), @changes.toOrderedIncomplete
+    done()
 
   @orderedIncompleteCheckbox.click()
 
-asyncTest "updates the source of an ordered list item, marking the complete item as incomplete", ->
-  expect 3
+QUnit.test "updates the source of an ordered list item, marking the complete item as incomplete", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   @field.on 'tasklist:changed', (event) =>
-    ok !event.detail.checked
-    equal event.detail.index, @orderedCompleteItem.expectedIndex
-    equal @field.val(), @changes.toOrderedComplete
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok !event.detail.checked
+    assert.equal event.detail.index, @orderedCompleteItem.expectedIndex
+    assert.equal @field.val(), @changes.toOrderedComplete
+    done()
 
   @orderedCompleteCheckbox.click()
 
-asyncTest "update ignores items that look like Task List items but lack list prefix", ->
-  expect 3
+QUnit.test "update ignores items that look like Task List items but lack list prefix", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   $('#qunit-fixture').empty()
 
@@ -432,18 +415,16 @@ asyncTest "update ignores items that look like Task List items but lack list pre
   container.taskList()
 
   field.on 'tasklist:changed', (event) =>
-    ok event.detail.checked
-    equal event.detail.index, item2.expectedIndex
-    equal field.val(), changes
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok event.detail.checked
+    assert.equal event.detail.index, item2.expectedIndex
+    assert.equal field.val(), changes
+    done()
 
   item2Checkbox.click()
 
-asyncTest "update ignores items that look like Task List items but are links", ->
-  expect 3
+QUnit.test "update ignores items that look like Task List items but are links", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   $('#qunit-fixture').empty()
 
@@ -498,18 +479,16 @@ asyncTest "update ignores items that look like Task List items but are links", -
   container.taskList()
 
   field.on 'tasklist:changed', (event) =>
-    ok event.detail.checked
-    equal event.detail.index, item2.expectedIndex
-    equal field.val(), changes
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok event.detail.checked
+    assert.equal event.detail.index, item2.expectedIndex
+    assert.equal field.val(), changes
+    done()
 
   item2Checkbox.click()
 
-asyncTest "updates items followed by links", ->
-  expect 3
+QUnit.test "updates items followed by links", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   $('#qunit-fixture').empty()
 
@@ -556,19 +535,17 @@ asyncTest "updates items followed by links", ->
   container.taskList()
 
   field.on 'tasklist:changed', (event) =>
-    ok event.detail.checked
-    equal event.detail.index, item2.expectedIndex
-    equal field.val(), changes
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok event.detail.checked
+    assert.equal event.detail.index, item2.expectedIndex
+    assert.equal field.val(), changes
+    done()
 
   item2Checkbox.click()
 
 # See https://github.com/deckar01/task_list/issues/3
-asyncTest "doesn't update items inside code blocks", ->
-  expect 3
+QUnit.test "doesn't update items inside code blocks", (assert) ->
+  done = assert.async()
+  assert.expect 3
 
   container = $ '<div>', class: 'js-task-list-container'
 
@@ -623,12 +600,9 @@ asyncTest "doesn't update items inside code blocks", ->
   container.taskList()
 
   field.on 'tasklist:changed', (event) =>
-    ok event.detail.checked
-    equal event.detail.index, item2.expectedIndex
-    equal field.val(), changes
-
-  setTimeout ->
-    start()
-  , 20
+    assert.ok event.detail.checked
+    assert.equal event.detail.index, item2.expectedIndex
+    assert.equal field.val(), changes
+    done()
 
   item2Checkbox.click()
