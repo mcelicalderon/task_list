@@ -71,6 +71,7 @@
 </head>
 <body>
   <div class="js-task-list-container js-task-list-enable">
+    <h2>Using Regex Parsing</h2>
     <div class="markdown">
       <ul class="task-list">
         <li>
@@ -89,6 +90,41 @@
           completed, lower
         </li>
         <li class="task-list-item">
+          <input type="checkbox" class="task-list-item-checkbox" disabled checked />
+          completed capitalized
+        </li>
+      </ul>
+    </div>
+    <form action="/update" method="POST" data-remote data-type="json">
+      <textarea name="comment[body]" class="js-task-list-field" cols="40" rows="10">
+- [ ]  
+- [ ] I'm a task list item
+- [ ] with non-breaking space
+- [x] completed, lower
+- [X] completed capitalized</textarea>
+    </form>
+  </div>
+
+  <div class="js-task-list-container js-task-list-enable">
+    <h2>Using CommonMark Source Positioning</h2>
+    <div class="markdown">
+      <ul class="task-list" data-sourcepos="1:1-5:27">
+        <li data-sourcepos="1:1-1:8">
+          [ ]
+        </li>
+        <li class="task-list-item" data-sourcepos="2:1-2:26">
+          <input type="checkbox" class="task-list-item-checkbox" disabled />
+          I'm a task list item
+        </li>
+        <li class="task-list-item" data-sourcepos="3:1-3:30">
+          <input type="checkbox" class="task-list-item-checkbox" disabled />
+          with non-breaking space
+        </li>
+        <li class="task-list-item" data-sourcepos="4:1-4:22">
+          <input type="checkbox" class="task-list-item-checkbox" disabled checked />
+          completed, lower
+        </li>
+        <li class="task-list-item" data-sourcepos="5:1-5:27">
           <input type="checkbox" class="task-list-item-checkbox" disabled checked />
           completed capitalized
         </li>
