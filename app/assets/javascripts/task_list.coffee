@@ -150,7 +150,7 @@ class TaskList
 
     unless changeEvent.defaultPrevented
       { result, lineNumber, lineSource } =
-        TaskList.updateSource(@field.value, index, item.checked)
+        TaskList.updateSource(@field.value, index, item.checked, item)
 
       @field.value = result
       changeEvent = createEvent 'change'
@@ -220,16 +220,46 @@ class TaskList
   # given checked value.
   #
   # Returns the updated String text.
-  @updateSource: (source, itemIndex, checked) ->
+  @updateSource: (source, itemIndex, checked, item) ->
+    if item.parentElement.hasAttribute('data-sourcepos')
+      @_updateSourcePosition(source, item, checked)
+    else
+      @_updateSourceRegex(source, itemIndex, checked)
+
+  # If we have sourcepos information, that tells us which line the task
+  # is on without the need for parsing
+  @_updateSourcePosition: (source, item, checked) ->
+    result = source.split("\n")
+    sourcepos = item.parentElement.getAttribute('data-sourcepos')
+    lineNumber = parseInt(sourcepos.split(":")[0])
+    lineSource = result[lineNumber - 1]
+
+    line =
+      if checked
+        lineSource.replace(@incompletePattern, @complete)
+      else
+        lineSource.replace(@completePattern, @incomplete)
+
+    result[lineNumber - 1] = line
+
+    return {
+      result: result.join("\n")
+      lineNumber: lineNumber
+      lineSource: lineSource
+    }
+
+  @_updateSourceRegex: (source, itemIndex, checked) ->
+    split_source = source.split("\n")
+    lineNumber
+    lineSource
+
     clean = source.replace(/\r/g, '').
       replace(@itemsInParasPattern, '').
       split("\n")
     index = 0
     inCodeBlock = false
-    lineNumber
-    lineSource
 
-    result = for line, i in source.split("\n")
+    result = for line, i in split_source
       if inCodeBlock
         # Lines inside of a code block are ignored.
         if line.match(@endFencesPattern)
@@ -249,6 +279,7 @@ class TaskList
             else
               line.replace(@completePattern, @incomplete)
       line
+
     return {
       result: result.join("\n")
       lineNumber: lineNumber

@@ -247,122 +247,183 @@ QUnit.module "TaskList updates",
 
     @blockquote.append @field
 
+    @completeItemSourcePos = '1:1-1:14'
+    @incompleteItemSourcePos = '2:1-2:16'
+    @incompleteNBSPItemSourcePos = '3:1-3:27'
+    @quotedCompleteItemSourcePos = '4:3-4:23'
+    @quotedIncompleteItemSourcePos = '5:3-5:25'
+    @innerCompleteItemSourcePos = '6:4-6:23'
+    @innerIncompleteItemSourcePos = '7:5-7:26'
+    @orderedCompleteItemSourcePos = '8:3-8:25'
+    @orderedIncompleteItemSourcePos = '9:3-9:27'
+
     $('#qunit-fixture').append(@container)
     @container.taskList()
+
+    @setSourcePosition = (item, pos) =>
+      item.attr('data-sourcepos', pos)
+
+    @onChanged = (assert) =>
+      utils =
+      test: (fn) =>
+        done = assert.async()
+        @field.on 'tasklist:changed', (event) =>
+          fn event
+          done()
+      eventHas: (name, value) =>
+        utils.test (event) =>
+          assert.equal event.detail[name], value
+      fieldIs: (value) =>
+        utils.test () =>
+          assert.equal @field.val(), value
 
   afterEach: ->
     $(document).off 'tasklist:changed'
 
 QUnit.test "updates the source, marking the incomplete item as complete", (assert) ->
-  done = assert.async()
-  assert.expect 3
+  @onChanged(assert).eventHas('checked', true)
+  @onChanged(assert).eventHas('index', @incompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toIncomplete)
 
-  @field.on 'tasklist:changed', (event) =>
-    assert.ok event.detail.checked
-    assert.equal event.detail.index, @incompleteItem.expectedIndex
-    assert.equal @field.val(), @changes.toIncomplete
-    done()
+  @incompleteCheckbox.click()
+
+QUnit.test "updates the source, marking the incomplete item as complete (sourcepos)", (assert) ->
+  @setSourcePosition(@incompleteItem, @incompleteItemSourcePos)
+  @onChanged(assert).eventHas('checked', true)
+  @onChanged(assert).eventHas('index', @incompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toIncomplete)
 
   @incompleteCheckbox.click()
 
 QUnit.test "updates the source, marking the complete item as incomplete", (assert) ->
-  done = assert.async()
-  assert.expect 3
+  @onChanged(assert).eventHas('checked', false)
+  @onChanged(assert).eventHas('index', @completeItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toComplete)
 
-  @field.on 'tasklist:changed', (event) =>
-    assert.ok !event.detail.checked
-    assert.equal event.detail.index, @completeItem.expectedIndex
-    assert.equal @field.val(), @changes.toComplete
-    done()
+  @completeCheckbox.click()
+
+QUnit.test "updates the source, marking the complete item as incomplete (sourcepos)", (assert) ->
+  @setSourcePosition(@completeItem, @completeItemSourcePos)
+  @onChanged(assert).eventHas('checked', false)
+  @onChanged(assert).eventHas('index', @completeItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toComplete)
 
   @completeCheckbox.click()
 
 # See: https://github.com/github/task-lists/pull/14
 QUnit.test "updates the source for items with non-breaking spaces", (assert) ->
-  done = assert.async()
-  assert.expect 3
+  @onChanged(assert).eventHas('checked', true)
+  @onChanged(assert).eventHas('index', @incompleteNBSPItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toIncompleteNBSP)
 
-  @field.on 'tasklist:changed', (event) =>
-    assert.ok event.detail.checked
-    assert.equal event.detail.index, @incompleteNBSPItem.expectedIndex
-    assert.equal @field.val(), @changes.toIncompleteNBSP
-    done()
+  @incompleteNBSPCheckbox.click()
+
+# See: https://github.com/github/task-lists/pull/14
+QUnit.test "updates the source for items with non-breaking spaces (sourcepos)", (assert) ->
+  @setSourcePosition(@incompleteNBSPItem, @incompleteNBSPItemSourcePos)
+  @onChanged(assert).eventHas('checked', true)
+  @onChanged(assert).eventHas('index', @incompleteNBSPItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toIncompleteNBSP)
 
   @incompleteNBSPCheckbox.click()
 
 QUnit.test "updates the source of a quoted item, marking the incomplete item as complete", (assert) ->
-  done = assert.async()
-  assert.expect 3
+  @onChanged(assert).eventHas('checked', true)
+  @onChanged(assert).eventHas('index', @quotedIncompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toQuotedIncomplete)
 
-  @field.on 'tasklist:changed', (event) =>
-    assert.ok event.detail.checked
-    assert.equal event.detail.index, @quotedIncompleteItem.expectedIndex
-    assert.equal @field.val(), @changes.toQuotedIncomplete
-    done()
+  @quotedIncompleteCheckbox.click()
+
+QUnit.test "updates the source of a quoted item, marking the incomplete item as complete (sourcepos)", (assert) ->
+  @setSourcePosition(@quotedIncompleteItem, @quotedIncompleteItemSourcePos)
+  @onChanged(assert).eventHas('checked', true)
+  @onChanged(assert).eventHas('index', @quotedIncompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toQuotedIncomplete)
 
   @quotedIncompleteCheckbox.click()
 
 QUnit.test "updates the source of a quoted item, marking the complete item as incomplete", (assert) ->
-  done = assert.async()
-  assert.expect 3
+  @onChanged(assert).eventHas('checked', false)
+  @onChanged(assert).eventHas('index', @quotedCompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toQuotedComplete)
 
-  @field.on 'tasklist:changed', (event) =>
-    assert.ok !event.detail.checked
-    assert.equal event.detail.index, @quotedCompleteItem.expectedIndex
-    assert.equal @field.val(), @changes.toQuotedComplete
-    done()
+  @quotedCompleteCheckbox.click()
+
+QUnit.test "updates the source of a quoted item, marking the complete item as incomplete (sourcepos)", (assert) ->
+  @setSourcePosition(@quotedCompleteItem, @quotedCompleteItemSourcePos)
+  @onChanged(assert).eventHas('checked', false)
+  @onChanged(assert).eventHas('index', @quotedCompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toQuotedComplete)
 
   @quotedCompleteCheckbox.click()
 
 QUnit.test "updates the source of a quoted quoted item, marking the incomplete item as complete", (assert) ->
-  done = assert.async()
-  assert.expect 3
+  @onChanged(assert).eventHas('checked', true)
+  @onChanged(assert).eventHas('index', @innerIncompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toInnerIncomplete)
 
-  @field.on 'tasklist:changed', (event) =>
-    assert.ok event.detail.checked
-    assert.equal event.detail.index, @innerIncompleteItem.expectedIndex
-    assert.equal @field.val(), @changes.toInnerIncomplete
-    done()
+  @innerIncompleteCheckbox.click()
+
+QUnit.test "updates the source of a quoted quoted item, marking the incomplete item as complete (sourcepos)", (assert) ->
+  @setSourcePosition(@innerIncompleteItem, @innerIncompleteItemSourcePos)
+  @onChanged(assert).eventHas('checked', true)
+  @onChanged(assert).eventHas('index', @innerIncompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toInnerIncomplete)
 
   @innerIncompleteCheckbox.click()
 
 QUnit.test "updates the source of a quoted quoted item, marking the complete item as incomplete", (assert) ->
-  done = assert.async()
-  assert.expect 3
+  @onChanged(assert).eventHas('checked', false)
+  @onChanged(assert).eventHas('index', @innerCompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toInnerComplete)
 
-  @field.on 'tasklist:changed', (event) =>
-    assert.ok !event.detail.checked
-    assert.equal event.detail.index, @innerCompleteItem.expectedIndex
-    assert.equal @field.val(), @changes.toInnerComplete
-    done()
+  @innerCompleteCheckbox.click()
+
+QUnit.test "updates the source of a quoted quoted item, marking the complete item as incomplete (sourcepos)", (assert) ->
+  @setSourcePosition(@innerCompleteItem, @innerCompleteItemSourcePos)
+  @onChanged(assert).eventHas('checked', false)
+  @onChanged(assert).eventHas('index', @innerCompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toInnerComplete)
 
   @innerCompleteCheckbox.click()
 
 QUnit.test "updates the source of an ordered list item, marking the incomplete item as complete", (assert) ->
-  done = assert.async()
-  assert.expect 3
+  @onChanged(assert).eventHas('checked', true)
+  @onChanged(assert).eventHas('index', @orderedIncompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toOrderedIncomplete)
 
-  @field.on 'tasklist:changed', (event) =>
-    assert.ok event.detail.checked
-    assert.equal event.detail.index, @orderedIncompleteItem.expectedIndex
-    assert.equal @field.val(), @changes.toOrderedIncomplete
-    done()
+  @orderedIncompleteCheckbox.click()
+
+QUnit.test "updates the source of an ordered list item, marking the incomplete item as complete (sourcepos)", (assert) ->
+  @setSourcePosition(@orderedIncompleteItem, @orderedIncompleteItemSourcePos)
+  @onChanged(assert).eventHas('checked', true)
+  @onChanged(assert).eventHas('index', @orderedIncompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toOrderedIncomplete)
 
   @orderedIncompleteCheckbox.click()
 
 QUnit.test "updates the source of an ordered list item, marking the complete item as incomplete", (assert) ->
-  done = assert.async()
-  assert.expect 3
+  @onChanged(assert).eventHas('checked', false)
+  @onChanged(assert).eventHas('index', @orderedCompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toOrderedComplete)
 
-  @field.on 'tasklist:changed', (event) =>
-    assert.ok !event.detail.checked
-    assert.equal event.detail.index, @orderedCompleteItem.expectedIndex
-    assert.equal @field.val(), @changes.toOrderedComplete
-    done()
+  @orderedCompleteCheckbox.click()
+
+QUnit.test "updates the source of an ordered list item, marking the complete item as incomplete (sourcepos)", (assert) ->
+  @setSourcePosition(@orderedCompleteItem, @orderedCompleteItemSourcePos)
+  @onChanged(assert).eventHas('checked', false)
+  @onChanged(assert).eventHas('index', @orderedCompleteItem.expectedIndex)
+  @onChanged(assert).fieldIs(@changes.toOrderedComplete)
 
   @orderedCompleteCheckbox.click()
 
 QUnit.test "update ignores items that look like Task List items but lack list prefix", (assert) ->
+  assertItemsLackListPrefix(assert, null, null)
+
+QUnit.test "update ignores items that look like Task List items but lack list prefix (sourcepos)", (assert) ->
+  assertItemsLackListPrefix(assert, '3:1-3:11', '4:1-4:10')
+
+assertItemsLackListPrefix =(assert, sourcepos1, sourcepos2) ->
   done = assert.async()
   assert.expect 3
 
@@ -373,6 +434,7 @@ QUnit.test "update ignores items that look like Task List items but lack list pr
   list = $ '<ul>', class: 'task-list'
 
   item1 = $ '<li>', class: 'task-list-item'
+  item1.attr('data-sourcepos', sourcepos1) if sourcepos1
   item1Checkbox = $ '<input>',
     type: 'checkbox'
     class: 'task-list-item-checkbox'
@@ -380,6 +442,7 @@ QUnit.test "update ignores items that look like Task List items but lack list pr
     checked: false
 
   item2 = $ '<li>', class: 'task-list-item'
+  item2.attr('data-sourcepos', sourcepos2) if sourcepos2
   item2Checkbox = $ '<input>',
     type: 'checkbox'
     class: 'task-list-item-checkbox'
@@ -423,6 +486,12 @@ QUnit.test "update ignores items that look like Task List items but lack list pr
   item2Checkbox.click()
 
 QUnit.test "update ignores items that look like Task List items but are links", (assert) ->
+  assertItemsButAreLinks(assert, null, null)
+
+QUnit.test "update ignores items that look like Task List items but are links (sourcepos)", (assert) ->
+  assertItemsButAreLinks(assert, '5:1-5:24', '6:1-6:10')
+
+assertItemsButAreLinks =(assert, sourcepos1, sourcepos2) ->
   done = assert.async()
   assert.expect 3
 
@@ -433,6 +502,7 @@ QUnit.test "update ignores items that look like Task List items but are links", 
   list = $ '<ul>', class: 'task-list'
 
   item1 = $ '<li>', class: 'task-list-item'
+  item1.attr('data-sourcepos', sourcepos1) if sourcepos1
   item1Checkbox = $ '<input>',
     type: 'checkbox'
     class: 'task-list-item-checkbox'
@@ -440,6 +510,7 @@ QUnit.test "update ignores items that look like Task List items but are links", 
     checked: false
 
   item2 = $ '<li>', class: 'task-list-item'
+  item2.attr('data-sourcepos', sourcepos2) if sourcepos2
   item2Checkbox = $ '<input>',
     type: 'checkbox'
     class: 'task-list-item-checkbox'
@@ -487,6 +558,12 @@ QUnit.test "update ignores items that look like Task List items but are links", 
   item2Checkbox.click()
 
 QUnit.test "updates items followed by links", (assert) ->
+  assertItemsFollowedByLinks(assert, null, null)
+
+QUnit.test "updates items followed by links (sourcepos)", (assert) ->
+  assertItemsFollowedByLinks(assert, '1:1-1:24', '2:1-3:0')
+
+assertItemsFollowedByLinks =(assert, sourcepos1, sourcepos2) ->
   done = assert.async()
   assert.expect 3
 
@@ -497,6 +574,7 @@ QUnit.test "updates items followed by links", (assert) ->
   list = $ '<ul>', class: 'task-list'
 
   item1 = $ '<li>', class: 'task-list-item'
+  item1.attr('data-sourcepos', sourcepos1) if sourcepos1
   item1Checkbox = $ '<input>',
     type: 'checkbox'
     class: 'task-list-item-checkbox'
@@ -504,6 +582,7 @@ QUnit.test "updates items followed by links", (assert) ->
     checked: false
 
   item2 = $ '<li>', class: 'task-list-item'
+  item2.attr('data-sourcepos', sourcepos2) if sourcepos2
   item2Checkbox = $ '<input>',
     type: 'checkbox'
     class: 'task-list-item-checkbox'
@@ -544,6 +623,12 @@ QUnit.test "updates items followed by links", (assert) ->
 
 # See https://github.com/deckar01/task_list/issues/3
 QUnit.test "doesn't update items inside code blocks", (assert) ->
+  assertItemsInsideCodeBlocks(assert, null, null)
+
+QUnit.test "doesn't update items inside code blocks (sourcepos)", (assert) ->
+  assertItemsInsideCodeBlocks(assert, '6:1-6:11', '7:1-7:11')
+
+assertItemsInsideCodeBlocks =(assert, sourcepos1, sourcepos2) ->
   done = assert.async()
   assert.expect 3
 
@@ -552,6 +637,7 @@ QUnit.test "doesn't update items inside code blocks", (assert) ->
   list = $ '<ul>', class: 'task-list'
 
   item1 = $ '<li>', class: 'task-list-item'
+  item1.attr('data-sourcepos', sourcepos1) if sourcepos1
   item1Checkbox = $ '<input>',
     type: 'checkbox'
     class: 'task-list-item-checkbox'
@@ -559,6 +645,7 @@ QUnit.test "doesn't update items inside code blocks", (assert) ->
     checked: false
 
   item2 = $ '<li>', class: 'task-list-item'
+  item2.attr('data-sourcepos', sourcepos2) if sourcepos2
   item2Checkbox = $ '<input>',
     type: 'checkbox'
     class: 'task-list-item-checkbox'
