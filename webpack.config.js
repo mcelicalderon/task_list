@@ -1,7 +1,7 @@
 module.exports = {
   entry: './app/assets/javascripts/task_list.coffee',
   output: {
-    filename: 'dist/task_list.js',
+    filename: 'task_list.js',
     libraryTarget: 'umd',
     library: 'TaskList',
   },
