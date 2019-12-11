@@ -144,6 +144,14 @@ At a high level, the Ruby components integrate with the [`html-pipeline`](https:
 
 [A polyfill for custom events](https://github.com/krambuhl/custom-event-polyfill) must be included to support IE10 and below.
 
+### Known issues
+
+The markdown parser used on the front end produces false positives when looking for checkboxes
+in some complex nesting situations. To combat this issue, you can enable the `sourcepos` option
+in your markdown parser. This will avoid parsing the markdown on the front end, because the line
+numbers will be provided as attributes on the HTML elements. `task_list` checks for the source
+position attribute and falls back to manually parsing the markown when needed.
+
 ### Upgrading
 
 #### 1.x to 2.x
