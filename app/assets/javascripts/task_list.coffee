@@ -202,7 +202,7 @@ class TaskList
   # Used to skip checkbox markup inside of code fences.
   # http://rubular.com/r/TfCDNsy8x4
   @startFencesPattern: /^`{3}.*$/
-  @endFencesPattern: /^`{3}$/
+  @endFencesPattern: /^`{3}\s*$/
 
   # Used to filter out potential mismatches (items not in lists).
   # http://rubular.com/r/OInl6CiePy
