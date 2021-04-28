@@ -16,7 +16,7 @@
     "build:css": "sass --no-source-map app/assets/stylesheets/task_list.scss dist/task_list.css",
     "build:js": "webpack",
     "build": "npm run build:css && npm run build:js",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
