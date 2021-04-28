@@ -13,7 +13,7 @@
     "test": "script/cibuild",
     "qunit": "karma start test/unit/config.js",
     "lint": "coffeelint app/assets/javascripts/task_list.coffee",
-    "build:css": "node-sass -o dist/ app/assets/stylesheets/task_list.scss",
+    "build:css": "sass --no-source-map app/assets/stylesheets/task_list.scss dist/task_list.css",
     "build:js": "webpack",
     "build": "npm run build:css && npm run build:js",
     "prepublish": "npm run build"
@@ -45,11 +45,10 @@
     "karma-chrome-launcher": "^3.1.0",
     "karma-qunit": "^4.0.0",
     "karma-webpack": "^4.0.2",
-    "node-sass": "^4.5.2",
     "phantomjs": "^1.9.19",
     "qunit": "^2.9.3",
+    "sass": "^1.32.11",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
-  },
-  "dependencies": {}
+  }
 }
