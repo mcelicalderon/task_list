@@ -10,6 +10,10 @@ Gem::Specification.new do |gem|
   gem.email         = ["jared.deckard@gmail.com"]
   gem.description   = %q{Markdown TaskList components}
   gem.summary       = %q{Markdown TaskList components}
+  gem.homepage      = 'https://github.com/deckar01/task_list'
+  
+  gem.metadata['homepage_uri'] = gem.homepage
+  gem.metadata['source_code_uri'] = gem.homepage
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
